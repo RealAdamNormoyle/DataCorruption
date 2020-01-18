@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public float movementSpeed = 5;
     public Transform cameraPivot;
     RotationConstraint xRotation;
+    public Animator armAnimator;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +26,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             dir += transform.forward;
-        }else if (Input.GetKey(KeyCode.S))
+        } else if (Input.GetKey(KeyCode.S))
         {
             dir -= transform.forward;
         }
@@ -39,10 +40,43 @@ public class PlayerController : MonoBehaviour
             dir += transform.right;
         }
 
+
+        if (dir != Vector3.zero)
+        {
+            armAnimator.SetBool("Walking", true);
+        }
+        else
+        {
+            armAnimator.SetBool("Walking", false);
+        }
+
         transform.position += (dir * movementSpeed) * Time.deltaTime;
 
         xRotation.weight = Mathf.Clamp(xRotation.weight + Input.GetAxis("Mouse Y") / 5, 0f, 1f);
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * 10, 0));
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Fire();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
+        }
+
+
+    }
+
+    void Fire()
+    {
+        armAnimator.SetTrigger("Shoot");
+    }
+
+    void Reload()
+    {
+        armAnimator.SetTrigger("Reload");
 
     }
 }
